@@ -12,7 +12,7 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 const MONGO_DUPLICATE_ERROR_CODE = 11000;
 const SOLT_ROUNDS = 10;
 
-//создание пользователя signup
+// создание пользователя signup
 module.exports.createUser = (req, res, next) => {
   const {
     name, email, password,
@@ -28,7 +28,7 @@ module.exports.createUser = (req, res, next) => {
     .then((user) => res.status(200).send({
       _id: user._id,
       name: user.name,
-      email: user.email
+      email: user.email,
     }))
     .catch((err) => {
       if (err.code === MONGO_DUPLICATE_ERROR_CODE) {
@@ -41,7 +41,7 @@ module.exports.createUser = (req, res, next) => {
     });
 };
 
-//авторизация пользователя signin
+// авторизация пользователя signin
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -75,7 +75,7 @@ module.exports.login = (req, res, next) => {
     .catch((err) => next(err));
 };
 
-//запрос информации о пользователе
+// запрос информации о пользователе
 module.exports.getUser = (req, res, next) => {
   User.findById(req.user)
     .orFail(new Error('NotValidId'))
@@ -91,7 +91,7 @@ module.exports.getUser = (req, res, next) => {
     });
 };
 
-//изменение информации о пользователе
+// изменение информации о пользователе
 module.exports.userDataUpdate = (req, res, next) => {
   User.findByIdAndUpdate(
     req.user._id,

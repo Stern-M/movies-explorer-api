@@ -5,8 +5,21 @@ const Error500 = require('../errors/500-Error');
 const ForbiddenError = require('../errors/403-Error');
 
 module.exports.createMovie = (req, res, next) => {
-  Movie.create({ name: req.body.name, link: req.body.link, owner: req.user._id })
-    .then((card) => res.status(200).send(card))
+  Movie.create({
+    country: req.body.country,
+    director: req.body.director,
+    duration: req.body.duration,
+    year: req.body.year,
+    description: req.body.description,
+    image: req.body.image,
+    trailer: req.body.trailer,
+    thumbnail: req.body.thumbnail,
+    owner: req.user._id,
+    movieId: req.body.movieId,
+    nameRU: req.body.nameRU,
+    nameEN: req.body.nameEN,
+  })
+    .then((movie) => res.status(200).send(movie))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Введены некорректные данные'));
@@ -25,10 +38,10 @@ module.exports.getAllMovies = (req, res, next) => {
 
 module.exports.deleteMovie = (req, res, next) => {
   Movie.findById(req.params.id)
-    .orFail(new Error('NotValidId'))
-    .then((card) => {
-      if (card.owner == req.user._id) {
-        Movie.findByIdAndDelete(req.params.id)
+    .orFail(new NotFoundError('Такой карточки нет'))
+    .then((movie) => {
+      if (movie.owner.equals(req.user._id)) {
+        movie.remove()
           .then(() => res.status(200).send({ message: 'Карточка успешно удалена!' }))
           .catch((err) => {
             if (err.name === 'CastError') {

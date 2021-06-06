@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/Stern-M/movies-explorer-api#readme",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "bcryptjs": "^2.4.3",
     "celebrate": "^14.0.0",
     "cors": "^2.8.5",
@@ -29,7 +30,8 @@
     "express-winston": "^4.1.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.12",
-    "validator": "^13.6.0"
+    "validator": "^13.6.0",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "eslint": "^7.28.0",

@@ -7,6 +7,9 @@ const extractBearerToken = (header) => header.replace('Bearer ', '');
 const auth = (req, res, next) => {
   const { authorization } = req.headers;
 
+  if (!authorization || !authorization.startsWith('Bearer ')) {
+    throw new AuthError('Необходима авторизация');
+  }
   const token = extractBearerToken(authorization);
   let payload;
   try {

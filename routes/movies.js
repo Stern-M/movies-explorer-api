@@ -8,8 +8,8 @@ const {
 const ruName = '/^[а-яА-Я0-9:.,?!@&#*$^]{0,}$/';
 const enName = '/^[a-zA-Z0-9:.,?!@&#*$^]{0,}$/';
 
-router.get('/movies', getAllMovies);
-router.post('/movies', celebrate({
+router.get('', getAllMovies);
+router.post('', celebrate({
   body: Joi.object().keys({
     country: Joi.string().required().min(2)
       .messages({
@@ -77,7 +77,7 @@ router.post('/movies', celebrate({
       }),
   }),
 }), createMovie);
-router.delete('/movies/:_id', celebrate({
+router.delete('/:_id', celebrate({
   params: Joi.object().keys({
     id: Joi.string().hex().length(24),
   }),

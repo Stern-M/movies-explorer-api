@@ -3,21 +3,21 @@ const { celebrate, Joi } = require('celebrate');
 const {
   userDataUpdate, getUser,
 } = require('../controllers/users');
-// eslint-disable-next-line no-useless-escape
-const pattern = '(?:http(s)?:\/\/)?[\\w.-]+(?:\.[\\w\.-]+)+[\\w\\W]+(?:png|jpg)?';
 
-router.get('/users/me', getUser);
-router.patch('/users/me', celebrate({
+router.get('/me', getUser);
+router.patch('/me', celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30).required(),
-    email: Joi.string().min(2).max(30).required(),
+    email: Joi.string().email().required()
+      .messages({
+        'string.required': 'Поле "email" должно быть заполнено',
+      }),
+    name: Joi.string().min(2).max(30)
+      .messages({
+        'string.min': 'Минимальная длина поля "name" 8 символов',
+        'string.max': 'Максимальная длина поля "name" 8 символов',
+        'string.required': 'Поле "name" должно быть заполнено',
+      }),
   }),
 }), userDataUpdate);
-router.patch('/me/avatar', celebrate({
-  body: Joi.object().keys({
-    // eslint-disable-next-line no-useless-escape
-    avatar: Joi.string().required().regex(RegExp(pattern)),
-  }),
-}), userAvatarUpdate);
 
 module.exports = router;
