@@ -5,8 +5,8 @@ const {
   getAllMovies, createMovie, deleteMovie,
 } = require('../controllers/movies');
 
-const ruName = '/^[а-яА-Я0-9:.,?!@&#*$^]{0,}$/';
-const enName = '/^[a-zA-Z0-9:.,?!@&#*$^]{0,}$/';
+const ruName = '^[а-яА-Я0-9:.,?!@&#*$^ ]{0,}$';
+const enName = '^[a-zA-Z0-9:.,?!@&#*$^ ]{0,}$';
 
 router.get('', getAllMovies);
 router.post('', celebrate({
@@ -16,7 +16,7 @@ router.post('', celebrate({
         'string.min': 'Минимальная длина поля "country" 2 символа',
         'string.required': 'Поле "country" должно быть заполнено',
       }),
-    director: Joi.string().required().min()
+    director: Joi.string().required().min(2)
       .messages({
         'string.min': 'Минимальная длина поля "director" 2 символа',
         'string.required': 'Поле "director" должно быть заполнено',
@@ -77,7 +77,7 @@ router.post('', celebrate({
       }),
   }),
 }), createMovie);
-router.delete('/:_id', celebrate({
+router.delete('/:id', celebrate({
   params: Joi.object().keys({
     id: Joi.string().hex().length(24),
   }),

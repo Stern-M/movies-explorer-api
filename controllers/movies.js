@@ -33,13 +33,16 @@ module.exports.getAllMovies = (req, res, next) => {
   Movie.find({})
     .sort({ createdAt: -1 })
     .then((movies) => res.send(movies))
-    .catch(() => next(new Error500('Что-то пошло не так')));
+    .catch(() => next(new Error500('Что-то пошло не так1')));
 };
 
 module.exports.deleteMovie = (req, res, next) => {
-  Movie.findById(req.params.id)
+  console.log(req.params.id);
+  Movie.findById(req.params.id).select('+owner')
     .orFail(new NotFoundError('Такой карточки нет'))
     .then((movie) => {
+      console.log(movie);
+      console.log(req.user._id);
       if (movie.owner.equals(req.user._id)) {
         movie.remove()
           .then(() => res.status(200).send({ message: 'Карточка успешно удалена!' }))
@@ -47,7 +50,7 @@ module.exports.deleteMovie = (req, res, next) => {
             if (err.name === 'CastError') {
               next(new BadRequestError('Переданы некорректные данные карточки'));
             } else {
-              next(new Error500('Что-то пошло не так'));
+              next(new Error500('Что-то пошло не так2'));
             }
           });
       } else {
@@ -58,7 +61,7 @@ module.exports.deleteMovie = (req, res, next) => {
       if (err.message === 'NotValidId') {
         next(new NotFoundError('Такой карточки нет'));
       } else {
-        next(new Error500('Что-то пошло не так'));
+        next(new Error500('Что-то пошло не так3'));
       }
     });
 };
