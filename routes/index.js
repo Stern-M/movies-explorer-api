@@ -43,6 +43,6 @@ router.post('/signup', celebrate({
 router.use(auth);
 router.use('/users', userRouter);
 router.use('/movies', movieRouter);
-router.use(() => new AuthError('Необходима авторизация3'));
+router.use(() => new AuthError('Необходима авторизация'));
 
 module.exports = router;

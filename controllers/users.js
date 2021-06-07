@@ -55,7 +55,7 @@ module.exports.login = (req, res, next) => {
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            return Promise.reject(new Error('Неправильные почта или пароль'));
+            return Promise.reject(new AuthError('Ошибка авторизации. Неправильные почта или пароль!'));
           }
           const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
           return res.status(201).cookie('jwt', token, {
@@ -72,7 +72,7 @@ module.exports.login = (req, res, next) => {
         })
         .catch(() => { next(new AuthError('Ошибка авторизации')); });
     })
-    .catch((err) => next(err));
+    .catch(next);
 };
 
 // запрос информации о пользователе
