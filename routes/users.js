@@ -15,7 +15,6 @@ router.patch('/me', celebrate({
       .messages({
         'string.min': 'Минимальная длина поля "name" 8 символов',
         'string.max': 'Максимальная длина поля "name" 8 символов',
-        'string.required': 'Поле "name" должно быть заполнено',
       }),
   }),
 }), userDataUpdate);

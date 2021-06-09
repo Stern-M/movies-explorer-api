@@ -27,9 +27,10 @@ app.use(routes);
 app.use(errorLogger);
 app.use(errors());
 
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   res.status(err.statusCode ? err.statusCode : 500)
-    .send({ message: err.message });
+    .send({ message: err.statusCode ? err.message : 'Произошла ошибка на сервере' });
+  next();
 });
 
 app.listen(PORT);

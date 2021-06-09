@@ -23,7 +23,7 @@ module.exports.createMovie = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Введены некорректные данные'));
-      } else if (err.name === !'ValidationError') {
+      } else {
         next(new Error500('Что-то пошло не так'));
       }
     });
@@ -41,24 +41,15 @@ module.exports.deleteMovie = (req, res, next) => {
     .orFail(new NotFoundError('Такой карточки нет'))
     .then((movie) => {
       if (movie.owner.equals(req.user._id)) {
-        movie.remove()
-          .then(() => res.status(200).send({ message: 'Карточка успешно удалена!' }))
-          .catch((err) => {
-            if (err.name === 'CastError') {
-              next(new BadRequestError('Переданы некорректные данные карточки'));
-            } else {
-              next(new Error500('Что-то пошло не так'));
-            }
-          });
-      } else {
-        next(new ForbiddenError('Вы не можете удалять чужие карточки'));
-      }
+        return movie.remove()
+          .then(() => res.status(200).send({ message: 'Карточка успешно удалена!' }));
+      } return next(new ForbiddenError('Вы не можете удалять чужие карточки'));
     })
     .catch((err) => {
-      if (err.message === 'NotValidId') {
-        next(new NotFoundError('Такой карточки нет'));
+      if (err.name === 'CastError') {
+        next(new BadRequestError('Переданы некорректные данные карточки'));
       } else {
-        next(new Error500('Что-то пошло не так3'));
+        next(err);
       }
     });
 };

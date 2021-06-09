@@ -57,10 +57,6 @@ router.post('', celebrate({
     }).messages({
       'string.required': 'Поле "thumbnail" должно быть заполнено',
     }),
-    owner: Joi.string().required()
-      .messages({
-        'string.required': 'Поле "owner" должно быть заполнено',
-      }),
     movieId: Joi.number().required()
       .messages({
         'number.required': 'Поле "movieId" должно быть заполнено',

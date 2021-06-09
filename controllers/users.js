@@ -5,9 +5,10 @@ const NotFoundError = require('../errors/404-Error');
 const BadRequestError = require('../errors/400-Error');
 const AuthError = require('../errors/401-Error');
 const Error500 = require('../errors/500-Error');
+const DuplicateDataError = require('../errors/409-Error');
 require('dotenv').config();
 
-const { NODE_ENV, JWT_SECRET } = process.env;
+const { JWT_SECRET } = require('../config');
 
 const MONGO_DUPLICATE_ERROR_CODE = 11000;
 const SOLT_ROUNDS = 10;
@@ -32,10 +33,10 @@ module.exports.createUser = (req, res, next) => {
     }))
     .catch((err) => {
       if (err.code === MONGO_DUPLICATE_ERROR_CODE) {
-        res.status(409).send({ message: 'Пользователь с переданный email уже существует' });
+        next(new DuplicateDataError('Пользователь с переданным email уже существует'));
       } else if (err.name === 'ValidationError') {
         next(new BadRequestError('Введены некорректные данные'));
-      } else if (err.name === !'ValidationError') {
+      } else {
         next(new Error500('Что-то пошло не так'));
       }
     });
@@ -57,7 +58,7 @@ module.exports.login = (req, res, next) => {
           if (!matched) {
             return Promise.reject(new AuthError('Ошибка авторизации. Неправильные почта или пароль!'));
           }
-          const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
+          const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
           return res.status(201).cookie('jwt', token, {
             maxAge: 3600000 * 24 * 7,
             httpOnly: true,
@@ -105,6 +106,8 @@ module.exports.userDataUpdate = (req, res, next) => {
         next(new BadRequestError('Переданы некорректные данные'));
       } else if (err.message === 'NotValidId') {
         next(new NotFoundError('Такого пользователя нет в базе'));
+      } else if (err.code === MONGO_DUPLICATE_ERROR_CODE) {
+        next(new DuplicateDataError('Пользователь с переданным email уже существует'));
       } else {
         next(new Error500('Что-то пошло не так'));
       }

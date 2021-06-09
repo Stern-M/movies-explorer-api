@@ -32,7 +32,7 @@ router.post('/signup', celebrate({
       .messages({
         'string.required': 'Поле "email" должно быть заполнено',
       }),
-    name: Joi.string().min(2).max(30)
+    name: Joi.string().min(2).max(30).required()
       .messages({
         'string.min': 'Минимальная длина поля "name" 8 символов',
         'string.max': 'Максимальная длина поля "name" 8 символов',
@@ -43,6 +43,8 @@ router.post('/signup', celebrate({
 router.use(auth);
 router.use('/users', userRouter);
 router.use('/movies', movieRouter);
-router.use(() => new AuthError('Необходима авторизация'));
+router.use(() => {
+  throw new AuthError('Необходима авторизация');
+});
 
 module.exports = router;
