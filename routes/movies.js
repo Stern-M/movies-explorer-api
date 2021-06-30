@@ -5,9 +5,6 @@ const {
   getAllMovies, createMovie, deleteMovie,
 } = require('../controllers/movies');
 
-const ruName = '^[а-яА-Я0-9:.,?!@&#*$^ ]{0,}$';
-const enName = '^[a-zA-Z0-9:.,?!@&#*$^ ]{0,}$';
-
 router.get('', getAllMovies);
 router.post('', celebrate({
   body: Joi.object().keys({
@@ -61,15 +58,13 @@ router.post('', celebrate({
       .messages({
         'number.required': 'Поле "movieId" должно быть заполнено',
       }),
-    nameRU: Joi.string().required().regex(RegExp(ruName))
+    nameRU: Joi.string().required()
       .messages({
         'string.required': 'Поле "nameRU" должно быть заполнено',
-        'string.regex': 'Используйте кириллицу',
       }),
-    nameEN: Joi.string().required().regex(RegExp(enName))
+    nameEN: Joi.string().required()
       .messages({
         'string.required': 'Поле "nameEN" должно быть заполнено',
-        'string.regex': 'Используйте латиницу',
       }),
   }),
 }), createMovie);
