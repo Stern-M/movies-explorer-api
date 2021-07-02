@@ -29,6 +29,13 @@ module.exports.createMovie = (req, res, next) => {
     });
 };
 
+// module.exports.getAllMovies = (req, res, next) => {
+//   Movie.find({}).select('+owner')
+//     .sort({ createdAt: -1 })
+//     .then((movies) => res.send(movies))
+//     .catch(() => next(new Error500('Что-то пошло не так')));
+// };
+
 module.exports.getAllMovies = (req, res, next) => {
   Movie.find({}).select('+owner')
     .sort({ createdAt: -1 })
